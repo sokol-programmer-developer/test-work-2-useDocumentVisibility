@@ -1,72 +1,42 @@
-# Getting Started with Create React App
+React - useDocumentVisibility
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Стек: React, typescript (опционален), сборка - microbundle/rollup
 
-## Available Scripts
+Надо реализовать react hook, который
 
-In the project directory, you can run:
+    скажет, активна (видна) ли сейчас вкладку браузера
+    скажет, сколько раз с момента инициализации компонента вкладка становилась неактивной (невидимой)
+    предоставит функцию, в которой можно подписаться на изменение активности (видимости) текущей вкладки
 
-### `npm start`
+Замечание: речь про "вкладка активна(видна)/неактивна", а не "вкладка в фокусе/не фокусе", это важно.
+Пример работы хука
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+useDocumentVisibility.ts
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+import React from 'react'
+import { useDocumentVisibility } from '@my-npm-user/react-document-visibility'
 
-### `npm test`
+const LeaveTabCounter = () => {
+  const { count, visible, onVisibilityChange } = useDocumentVisibility();
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  useEffect(() => {
+    onVisibilityChange((isVisible) => {
+      console.log('first handler', isVisible)
+    });
 
-### `npm run build`
+    const unsubscribeSecondHandler = onVisibilityChange((isVisible) => {
+      console.log('second handler', isVisible)
+    });
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    setTimeout(() => unsubscribeSecondHandler(), 5000); // отписываемся от 'second handler' через 5 секунд
+  }, [])
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# test-work-3-visibilityChange
-# test-work-2-useDocumentVisibility
+  return (
+    <div>
+      <span>
+        Вы покинули страницу: {count} раз
+        Вкладка активна? {visible ? 'да' : 'нет'}
+      </span>
+    </div>
+  );
+};
