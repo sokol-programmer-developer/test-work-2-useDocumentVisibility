@@ -1,0 +1,8 @@
+.container{
+  margin: 200px auto;
+  display: grid;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: monospace;
+}
