@@ -12,7 +12,7 @@ const Home = () => {
     onVisibilityChange((isVisible) => {
       console.log('second handler', isVisible)
     });
-  }, [])
+  })
 
   return (
     <div className='container' >
